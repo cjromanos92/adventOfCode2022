@@ -10,12 +10,26 @@ Future<void> getFileLines() async {
 
   int totalScore = 0;
 
+  List<String> letters = [];
+
+  // Add lowercase letters a through z to the list
+  for (int i = 97; i <= 122; i++) {
+    letters.add(String.fromCharCode(i));
+  }
+
+  // Add uppercase letters A through Z to the list
+  for (int i = 65; i <= 90; i++) {
+    letters.add(String.fromCharCode(i));
+  }
+
+  // Print the list of letters
+  print(letters);
+
+
   for (var game in check) {
     var thisGame = game.split(' ');
     var opponentChoice = thisGame[0];
     var outcome = thisGame[1];
-    print(opponentChoice);
-    print(outcome);
     int gameScore = 0;
 
     switch (outcome) {
