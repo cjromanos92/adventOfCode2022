@@ -88,6 +88,7 @@ Future<void> getFileLines() async {
   }
   print("DONE 4");
   print("FINAL TOTAL  SIZE IS $finalSize");
+  print("DELETE THIS PRINT");
 }
 
 Future<File> writeToFile(ByteData data, String path) {
