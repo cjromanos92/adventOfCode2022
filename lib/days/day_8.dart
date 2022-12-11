@@ -47,6 +47,12 @@ Future<void> getFileLines() async {
     i++;
   }
 
+
+  //BUILDS "TABLE" CORRECTLY
+  //REFER TO TREES FOR TREE OBJECTS
+  //REFER TO TREEROWS FOR ROWS OF INTS
+  //REFER TO TREECOLS FOR COLUMNS OF INTS
+
   i = 0;
   j = 0;
   int visibleCount = 0;
@@ -72,32 +78,10 @@ Future<void> getFileLines() async {
         //CHECK LEFT & RIGHT
         var tempLeft = treeRows[i].getRange(0, j);
         List<int> scenicLeft = tempLeft.toList();
-        bool viewBlocked = false;
-        while( viewBlocked == false){
-          for (var tree in scenicLeft.reversed) {
-            if (tree < trees[i][j].height) {
-              scenicScoreLeft++;
-              viewBlocked = false;
-            } else {
-              viewBlocked = true;
-              break;
-            }
-          }
-        }
+
         var tempRight = treeRows[i].getRange(j + 1, treeRows[i].length);
         List<int> scenicRight = tempRight.toList();
-        viewBlocked = false;
-        while( viewBlocked == false){
-          for (var tree in scenicRight.reversed) {
-            if (tree < trees[i][j].height) {
-              scenicScoreRight++;
-              viewBlocked = false;
-            } else {
-              viewBlocked = true;
-              break;
-            }
-          }
-        }
+
         int leftMax = tempLeft.reduce(max);
 
         int rightMax = tempRight.reduce(max);
@@ -112,41 +96,16 @@ Future<void> getFileLines() async {
         //CHECK UP & DOWN
         var tempUp = treeCols[j].getRange(0, i);
         List<int> scenicUp = tempUp.toList();
-        viewBlocked = false;
-        while( viewBlocked == false){
-          for (var tree in scenicUp.reversed) {
-            if (tree < trees[i][j].height) {
-              scenicScoreTop++;
-              viewBlocked = false;
-            } else {
-              viewBlocked = true;
-              break;
-            }
-          }
-        }
+
         var tempDown = treeCols[j].getRange(i + 1, treeCols[j].length);
         List<int> scenicDown = tempDown.toList();
-        viewBlocked = false;
-        while( viewBlocked == false){
-          for (var tree in scenicDown.reversed) {
-            if (tree < trees[i][j].height) {
-              scenicScoreBottom++;
-            } else {
-              viewBlocked = true;
-              break;
-            }
-          }
-        }
+
         int upMax = tempUp.reduce(max);
         int downMax = tempDown.reduce(max);
-        print("SCENIC SCORE ******************");
-        print(
-            "SCENIC SCORE LEFT: $scenicScoreLeft RIGHT: $scenicScoreRight TOP: $scenicScoreTop BOTTOM: $scenicScoreBottom");
         int multiplied = scenicScoreLeft *
             scenicScoreRight *
             scenicScoreTop *
             scenicScoreBottom;
-        print("MULTIPLIED: $multiplied");
         if (multiplied > highestScore) {
           highestScore = multiplied;
         }
@@ -165,20 +124,120 @@ Future<void> getFileLines() async {
         }
       }
       j++;
-      scenicScoreLeft = 0;
-      scenicScoreRight = 0;
-      scenicScoreTop = 0;
-      scenicScoreBottom = 0;
       visibleFromBottom = false;
       visibleFromTop = false;
       visibleFromRight = false;
       visibleFromLeft = false;
     }
-    j = 0;
     i++;
   }
 
   print("VISIBLE COUNT IS : $visibleCount");
+
+  i = 0;
+  j = 0;
+  scenicScoreLeft = 0;
+  scenicScoreRight = 0;
+  scenicScoreTop = 0;
+  scenicScoreBottom = 0;
+  while (i < treeRows.length) {
+    j = 0;
+    while (j < treeCols[j].length) {
+      scenicScoreBottom = 0;
+      scenicScoreTop = 0;
+      scenicScoreRight = 0;
+      scenicScoreLeft = 0;
+      int totalScenicScore = 0;
+      Tree thisTree = trees[i][j];
+      bool viewBlocked = false;
+      var tempLeft = treeRows[i].getRange(0, j);
+      List<int> scenicLeft = tempLeft.toList();
+
+      scenicLeft = scenicLeft.reversed.toList();
+      viewBlocked = false;
+      while (viewBlocked == false) {
+        if (scenicLeft.length == 0) {
+          viewBlocked = true;
+        } else {
+          int nextTree = scenicLeft[0];
+          if (nextTree < thisTree.height) {
+            scenicScoreLeft++;
+            scenicLeft.removeAt(0);
+          } else {
+            scenicScoreLeft++;
+            viewBlocked = true;
+          }
+        }
+      }
+
+
+      var tempRight = treeRows[i].getRange(j + 1, treeRows[i].length);
+      List<int> scenicRight = tempRight.toList();
+
+      viewBlocked = false;
+      while (viewBlocked == false) {
+        if (scenicRight.length == 0) {
+          viewBlocked = true;
+        } else {
+          int nextTree = scenicRight[0];
+          if (nextTree < thisTree.height) {
+            scenicScoreRight++;
+            scenicRight.removeAt(0);
+          } else {
+            scenicScoreRight++;
+            viewBlocked = true;
+          }
+        }
+      }
+
+
+      var tempUp = treeCols[j].getRange(0, i);
+      List<int> scenicUp = tempUp.toList();
+      scenicUp = scenicUp.reversed.toList();
+
+      viewBlocked = false;
+      while (viewBlocked == false) {
+        if (scenicUp.length == 0) {
+          viewBlocked = true;
+        } else {
+          int nextTree = scenicUp[0];
+          if (nextTree < thisTree.height) {
+            scenicScoreTop++;
+            scenicUp.removeAt(0);
+          } else {
+            scenicScoreTop++;
+            viewBlocked = true;
+          }
+        }
+      }
+
+
+      var tempDown = treeCols[j].getRange(i + 1, treeCols[j].length);
+      List<int> scenicDown = tempDown.toList();
+
+      viewBlocked = false;
+      while (viewBlocked == false) {
+        if (scenicDown.length == 0) {
+          viewBlocked = true;
+        } else {
+          int nextTree = scenicDown[0];
+          if (nextTree < thisTree.height) {
+            scenicScoreBottom++;
+            scenicDown.removeAt(0);
+          } else {
+            scenicScoreBottom++;
+            viewBlocked = true;
+          }
+        }
+      }
+      totalScenicScore = scenicScoreLeft * scenicScoreRight * scenicScoreTop * scenicScoreBottom;
+      if(totalScenicScore > highestScore) {
+        highestScore = totalScenicScore;
+      }
+      j++;
+    }
+    i++;
+  }
   print("HIGHEST SCORE IS : $highestScore");
 }
 
